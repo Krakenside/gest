@@ -1,0 +1,19 @@
+[05-Jun-2022 06:24:17 UTC] PHP Notice:  Undefined variable: pdo in /home/il464o04ep3v/public_html/gest/cron/artsmapi.php on line 413
+[05-Jun-2022 06:24:17 UTC] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in /home/il464o04ep3v/public_html/gest/cron/artsmapi.php:413
+Stack trace:
+#0 {main}
+  thrown in /home/il464o04ep3v/public_html/gest/cron/artsmapi.php on line 413
+[05-Jun-2022 06:32:53 UTC] PHP Notice:  Undefined variable: pdo in /home/il464o04ep3v/public_html/gest/cron/artsmapi.php on line 413
+[05-Jun-2022 06:32:53 UTC] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in /home/il464o04ep3v/public_html/gest/cron/artsmapi.php:413
+Stack trace:
+#0 {main}
+  thrown in /home/il464o04ep3v/public_html/gest/cron/artsmapi.php on line 413
+[05-Jun-2022 06:39:56 UTC] PHP Notice:  Undefined variable: pdo in /home/il464o04ep3v/public_html/gest/cron/artsmapi.php on line 413
+[05-Jun-2022 06:39:56 UTC] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in /home/il464o04ep3v/public_html/gest/cron/artsmapi.php:413
+Stack trace:
+#0 {main}
+  thrown in /home/il464o04ep3v/public_html/gest/cron/artsmapi.php on line 413
+[05-Jun-2022 07:01:48 UTC] PHP Fatal error:  Uncaught Error: Call to undefined method PDO::quey() in /home/il464o04ep3v/public_html/gest/cron/artsmapi.php:413
+Stack trace:
+#0 {main}
+  thrown in /home/il464o04ep3v/public_html/gest/cron/artsmapi.php on line 413
