@@ -95,7 +95,8 @@ foreach ($res1 as $key => $value) {
     echo   $nbr_vt_sons_art . '<br>';
     echo ("Montant ventes sons CFA " . $mtn_vt_art_cfa . "<br>");
     echo ("Montant ventes sons GNF " . $mtn_vt_art_GNF . "<br>");
-
+    $mtn_vt_art_cfa = 0 ;
+    $mtn_vt_art_GNF = 0;
     #determinons les transactions pour chaque album
 
     $reqAlb = "SELECT * FROM album where album.id_artiste = :id_art";
@@ -114,7 +115,9 @@ foreach ($res1 as $key => $value) {
         #determinons les transactions pour ce album
         $reqtrAlb = 'SELECT * FROM transaction 
         INNER JOIN pays on pays.id_pays = transaction.id_pays 
-        WHERE transaction.statut_transaction = "SUCCESS"   AND date_transaction BETWEEN "2021-01-01%" AND "2022-12-31%" AND  (transaction.libelle_transaction LIKE "album-%"  AND transaction.libelle_transaction LIKE "%-' . $elmt2["id_album"] . '") ';
+        WHERE transaction.statut_transaction = "SUCCESS"   
+        AND date_transaction BETWEEN "2021-01-01%" AND "2022-12-31%"
+         AND  (transaction.libelle_transaction LIKE "album-%"  AND transaction.libelle_transaction LIKE "%-' . $elmt2["id_album"] . '") ';
         $st6 = $bdd->query($reqtrAlb);
         // echo 'Nombre de transactions pour l"album : ' . $elmt2["titre_album"] . ' ';
         // echo ($elmt2["prix_album"]);
@@ -124,11 +127,11 @@ foreach ($res1 as $key => $value) {
 
             if ($elmt3["id_pays"] == 4) {
                 // echo  'Montant GN : ';
-                var_dump($elmt3["montant_transaction"].'<br>');
+                // var_dump($elmt3["montant_transaction"].'<br>');
                 $mtn_art_Alb_GNF += $elmt3["montant_transaction"];
             } else {
                 // echo 'Montant cfa: ';
-                var_dump($elmt3["montant_transaction"].'<br>');
+                // var_dump($elmt3["montant_transaction"].'<br>');
                 $mtn_art_Alb_CFA += $elmt3["montant_transaction"];
             }
         }
@@ -136,9 +139,12 @@ foreach ($res1 as $key => $value) {
     }
     echo '<br>';
     $i++;
-    // echo   $nbr_vt_alb . '<br>';
-    // echo ("Montant ventes Albums CFA " . $mtn_art_Alb_CFA . "<br>");
-    // echo ("Montant ventes Albums GNF " . $mtn_art_Alb_GNF . "<br>");
+    echo   $nbr_vt_alb . '<br>';
+    echo ("Montant ventes Albums CFA " . $mtn_art_Alb_CFA . "<br>");
+    echo ("Montant ventes Albums GNF " . $mtn_art_Alb_GNF . "<br>");
+    $nbr_vt_alb = 0;
+    $mtn_art_Alb_CFA = 0;
+    $mtn_art_Alb_GNF = 0;
     if ($i == 2) die;
 }
 
