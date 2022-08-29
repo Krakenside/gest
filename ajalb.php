@@ -501,7 +501,7 @@ if ($connect == "1" and $_SESSION["userCompte"] == 'ADMINAFP20') // Si le visite
                         <input type="hidden" name="id_genre" value="<?php echo $res["id_genre"]; ?>">
 
                         <input type="hidden" name="prx_son" value="<?php echo $_GET["pr"]; ?>">
-
+                        <input type="hidden" name="prix_def" value"<?php echo $_GET["pr"]; ?>">
 
 
                         <!--<input name="table" type="text" value="son" hidden="">-->
@@ -532,7 +532,7 @@ if ($connect == "1" and $_SESSION["userCompte"] == 'ADMINAFP20') // Si le visite
 
 
 
-                                <input type="hidden" name="prx_son" value="<?php echo $i; ?>">
+                                <input type="hidden" name="prx_son" value="<?php echo $_GET["pr"]; ?>">
 
                                 <label style="margin-top:15px;">Titre du son n° <?php echo $i + 1 ?></label>
 
@@ -544,7 +544,7 @@ if ($connect == "1" and $_SESSION["userCompte"] == 'ADMINAFP20') // Si le visite
 
                                 <label style="margin-top:15px;">Prix du son</label>
 
-                                <input class="form-control" name="prix_son<?php echo $i ?>" type="text" placeholder="" value="<?php echo $_GET["pr"]; ?>" disabled>
+                                <input class="form-control" name="prx_son<?php echo $i ?>" type="text" placeholder="" value="<?php echo $_GET["pr"]; ?>" disabled>
 
 
 

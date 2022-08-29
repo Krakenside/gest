@@ -950,7 +950,9 @@ if (isset($_GET['fct']) && ($_GET['fct'] == "1")) {
 
     $id_album = $_POST["id_alb"];
 
-    $prx = $_POST["prx_son"];
+    // $prx = $_POST["prx_son"];
+    // var_dump($_GET["pr"]);
+    // var_dump($_POST["prx_son"]);
 
     $order = $_POST["nbr"];
 
@@ -982,7 +984,9 @@ if (isset($_GET['fct']) && ($_GET['fct'] == "1")) {
 
         $fichier_son =  $fl;
 
-        $prix_son = isset($_POST["prx_son" . $i . ""]) ? $_POST["prx_son" . $i . ""] : $prx;
+        // $prix_son = isset($_POST["prx_son" . $i . ""]) ? $_POST["prx_son" . $i . ""] : $prx;
+        $prix_son = $_POST["prx_son"];
+        // var_dump($prix_son);
 
         $fichier_son = $fl;
 
@@ -1016,7 +1020,8 @@ if (isset($_GET['fct']) && ($_GET['fct'] == "1")) {
 
         //  var_dump($cover);
 
-        //  var_dump($prix_son);
+        //  var_dump($_POST["prx_son" . $i . ""]);
+         
 
         //  var_dump($url);
 
