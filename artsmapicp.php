@@ -56,7 +56,7 @@ $mtn_art_Alb_CFA  = 0;
 $mtn_art_Alb_GNF  = 0;
 
 foreach ($res1 as $key => $value) {
-    #pour chaque artiste dterminons les sons 
+    #pour chaque artiste determinons les sons 
     var_dump($value["nom_artiste"]);
     echo '<br>';
 
@@ -73,6 +73,12 @@ foreach ($res1 as $key => $value) {
         $reqtrsons = 'SELECT * FROM transaction 
         INNER JOIN pays on pays.id_pays = transaction.id_pays 
         WHERE transaction.statut_transaction = "SUCCESS"   AND date_transaction BETWEEN "2021-01-01%" AND "2022-12-31%" AND  (transaction.libelle_transaction LIKE "son-%"  AND transaction.libelle_transaction LIKE "%-' . $elmt["id_son"] . '") ';
+
+        //determinons les dons pour ce son
+
+        $reqDons = 'SELECT * FROM transaction 
+        INNER JOIN pays on pays.id_pays = transaction.id_pays 
+        WHERE transaction.statut_transaction = "SUCCESS"   AND date_transaction BETWEEN "2021-01-01%" AND "2022-12-31%" AND  (transaction.libelle_transaction LIKE "son-%"  AND transaction.libelle_transaction LIKE "%-' . $elmt["id_son"] . '" AND transaction.libelle_transaction LIKE "%-don") ';
         $st3 = $bdd->query($reqtrsons);
         // echo 'Nombre de transactions pour le son : ' . $elmt["titre_son"] . ' ';
         // var_dump($st3->rowCount());
@@ -95,8 +101,9 @@ foreach ($res1 as $key => $value) {
     echo   $nbr_vt_sons_art . '<br>';
     echo ("Montant ventes sons CFA " . $mtn_vt_art_cfa . "<br>");
     echo ("Montant ventes sons GNF " . $mtn_vt_art_GNF . "<br>");
-    $mtn_vt_art_cfa = 0 ;
+    $mtn_vt_art_cfa = 0;
     $mtn_vt_art_GNF = 0;
+    $nbr_vt_sons_art = 0;
     #determinons les transactions pour chaque album
 
     $reqAlb = "SELECT * FROM album where album.id_artiste = :id_art";
@@ -119,7 +126,7 @@ foreach ($res1 as $key => $value) {
         AND date_transaction BETWEEN "2021-01-01%" AND "2022-12-31%"
          AND  (transaction.libelle_transaction LIKE "album-%"  AND transaction.libelle_transaction LIKE "%-' . $elmt2["id_album"] . '") ';
         $st6 = $bdd->query($reqtrAlb);
-        // echo 'Nombre de transactions pour l"album : ' . $elmt2["titre_album"] . ' ';
+        // echo 'Nombre de transactions pour l"album : ' . $elmt2["id_album"] . ' ';
         // echo ($elmt2["prix_album"]);
         // var_dump($st6->rowCount());
         $nbr_vt_alb += $st6->rowCount();
@@ -135,19 +142,38 @@ foreach ($res1 as $key => $value) {
                 $mtn_art_Alb_CFA += $elmt3["montant_transaction"];
             }
         }
-        var_dump($st6->rowCount());
+        // var_dump($st6->rowCount());
     }
     echo '<br>';
     $i++;
     echo   $nbr_vt_alb . '<br>';
     echo ("Montant ventes Albums CFA " . $mtn_art_Alb_CFA . "<br>");
     echo ("Montant ventes Albums GNF " . $mtn_art_Alb_GNF . "<br>");
+
+    // les vqleurs sont correctes inserons les vvaleurs dans la bd 
+
+    // $reqIns = "INSERT INTO banque(Id_artiste_banque,Nom_artiste_banque,Montant_genere_banque,Montant_alb_cfa_banque,Montant_alb_gnf_banque,     Montant_sons_cfa_banque,Montant_sons_gnf_banque,Montant_dons_cfa_banque,Montant_dons_gnf_banque) 
+    //     VALUES(:Id_artiste_banque,:Nom_artiste_banque,:Montant_genere_banque,:Montant_alb_cfa_banque,:Montant_alb_gnf_banque,   :Montant_sons_cfa_banque,:Montant_sons_gnf_banque,:Montant_dons_cfa_banque,:Montant_dons_gnf_banque) ";
+
+    // $stIns = $bdd->prepare($reqIns);
+
+    // $stIns->execute(array(
+    //     'Id_artiste_banque' => $value["id_artiste"],
+    //     'Nom_artiste_banque' => $value["nom_artiste"],
+    //     'Montant_alb_cfa_banque' => $mtn_art_Alb_CFA
+    // ));
     $nbr_vt_alb = 0;
     $mtn_art_Alb_CFA = 0;
     $mtn_art_Alb_GNF = 0;
-    if ($i == 2) die;
-}
 
+
+//determinons les dons 
+
+$reqDons = "";
+
+
+    if ($i == 4) die;
+}
 
 
 

@@ -1045,11 +1045,11 @@ if (isset($_GET['fct']) && ($_GET['fct'] == "1")) {
 
         $filename = 'upload_sons_log.txt';
 
-        $reqex = "select * from son where son.titre_son =:titre";
+        $reqex = "select * from son where son.titre_son =:titre and son.id_artiste = :id_artiste";
 
         $st = $bdd->prepare($reqex);
 
-        $st->execute(array('titre' => $titre));
+        $st->execute(array('titre' => $titre,'id_artiste'=>$id_art));
 
         $resex = $st->fetch();
 
