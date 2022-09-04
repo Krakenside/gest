@@ -5,6 +5,10 @@ require 'connexion.php';
 // initialisation de la date 
 $dt = "2021-01-01";
 $dt2 = "2022-12-01";
+
+$msg = ''. PHP_EOL;
+$msg .= 'Statistiques sur la période du :   ' . $dt . ' au  : ' . $dt2 . PHP_EOL;
+$filename = 'cronMoov/Stats_hebdomadaires_MoovAFP.txt';
 // print_r($dt);
 $dt .= '%';
 $dt2 .= '%';
@@ -98,7 +102,13 @@ $st4->execute(
 $res3 = $st4->fetchAll();
 $nbr_trx_pend_airtg = $st4->rowCount();
 echo '<br> <h2> Achat via Credit de communication  </h2> <br>';
-echo ("Success  :" . $nbr_trx_su_airtg . "<br>");
+
+
+$msg .= 'Achat via Credit de communication ' . PHP_EOL;
+$msg .= 'Success  :' . $nbr_trx_su_airtg . '' . PHP_EOL;
+$msg .= 'Fail:' . $nbr_trx_fl_airtg . PHP_EOL;
+$msg .= 'Pending:' . $nbr_trx_pend_airtg . PHP_EOL;
+echo ("Success  : " . $nbr_trx_su_airtg . "<br>");
 echo ("Fail  : " . $nbr_trx_fl_airtg . "<br>");
 echo ("Pending  : " . $nbr_trx_pend_airtg . "<br>");
 // var_dump("Success AIRTG : ",$nbr_trx_su_airtg,"<br>" );
@@ -123,10 +133,14 @@ $st5->execute(
 $nbUser  = $st5->rowCount();
 
 echo ("Nombre d'utilisateurs distincs  : " . $nbUser . "<br>");
-
+$msg .= "Nombre d'utilisateurs distincts :  " . $nbUser . PHP_EOL;
+$msg .= PHP_EOL ;
+file_put_contents($filename, $msg, FILE_APPEND);
+$msg = "";
 
 //determinons les stats pour les achats via flooz 
 $nbr_trx_su_fl = 0;
+$msg .= 'Achats via Flooz '. PHP_EOL;
 $reqSuccesFlTg = "SELECT * FROM transaction 
 INNER JOIN integrateur_transaction 
 ON transaction.id_transaction = integrateur_transaction.id_transaction 
@@ -145,6 +159,7 @@ $st6->execute(
 );
 $res4 = $st6->fetchAll();
 $nbr_trx_su_fl = $st6->rowCount();
+$msg .= 'Success :  ' . $nbr_trx_su_fl . PHP_EOL;
 
 
 $nbr_trx_fl_Flz_tg = 0;
@@ -166,6 +181,7 @@ $st7->execute(
 );
 $res4 = $st7->fetchAll();
 $nbr_trx_fl_Flz_Tg = $st7->rowCount();
+$msg .= 'Fail :  ' . $nbr_trx_fl_Flz_Tg . PHP_EOL;
 
 
 
@@ -188,9 +204,11 @@ $st8->execute(
 );
 $res5 = $st8->fetchAll();
 $nbr_trx_pend_Flz_Tg = $st8->rowCount();
+$msg .= 'Pending : ' . $nbr_trx_pend_Flz_Tg . PHP_EOL;
+
 
 echo '<br> <h2> Stats achats via  Flooz TOGO  </h2><br>';
-echo ("Success  :" . $nbr_trx_su_fl . "<br>");
+echo ("Success  : " . $nbr_trx_su_fl . "<br>");
 echo ("Fail   : " . $nbr_trx_fl_Flz_Tg . "<br>");
 echo ("Pending   : " . $nbr_trx_pend_Flz_Tg . "<br>");
 
@@ -210,5 +228,9 @@ $st9->execute(
 );
 
 $nbUser_Flz  = $st9->rowCount();
+$msg .= "Nombre d'utilisateurs distincs : " . $nbUser_Flz . PHP_EOL;
+file_put_contents($filename, $msg, FILE_APPEND);
+
+
 
 echo ("Nombre d'utilisateurs distincs  : " . $nbUser_Flz . "<br>");
