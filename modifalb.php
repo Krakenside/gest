@@ -21,12 +21,15 @@ if ($connect == "1" and $_SESSION["userCompte"] == 'ADMINAFP20') // Si le visite
 {
     require 'connexion.php';
     
-     if(($_GET['ex']==1)){
+     if(isset(($_GET['ex']))&&($_GET['ex']==1)){
         // var_dump($_GET['ex']);
         ?>
         <script> alert("son deja existant!");  </script>
         
     <?php }
+    // else{
+    //     $_GET['ex'] = 0;
+    // }
     if(isset($_GET['t'])){
         ?>
        <script> alert(" Son(s) Ajoutés avec succes ! ");</script>
@@ -301,7 +304,7 @@ if ($connect == "1" and $_SESSION["userCompte"] == 'ADMINAFP20') // Si le visite
                         <div class="form-group">
 
                             <label style="margin-top:15px;">Artiste</label>
-                            <input type="text" name="artiste" class="form-control" value="<?php echo $vr_art[1];  ?>">
+                            <input type="text" name="artiste" class="form-control" value="<?php echo $vr_art[1];  ?>" >
                             <input type="hidden" value="<?php echo $vr_art[0];  ?>">
 
                             <label style="margin-top:15px;">Titre de l'album</label>
@@ -346,7 +349,7 @@ if ($connect == "1" and $_SESSION["userCompte"] == 'ADMINAFP20') // Si le visite
                     $vr_art = explode(" ", $_GET["artiste"]);
                     $nbr_sons = $_GET['nbr_sons'];
                     // $inf = explode(' ', $_GET['infos']);
-                    // var_dump($inf);
+                    var_dump($inf);
                     $reqAlb2 = "SELECT *  FROM album WHERE album.id_album = :idalb";
                     $stAl = $bdd->prepare($reqAlb2);
                     $stAl->execute(
@@ -364,11 +367,13 @@ if ($connect == "1" and $_SESSION["userCompte"] == 'ADMINAFP20') // Si le visite
                     );
                     $resP = $stPrice->fetch();
                     // var_dump($resP);
+                    // var_dump($inf[0]);
+                    // var_dump($stPrice);
                     
-                     $price_song = ($resP['prix_son']==NULL ) ? 200 : $resP['prix_son'];
+                     $price_song = (is_bool($resP ) || $resP['prix_son']==NULL ) ? 200 : $resP['prix_son'];
                     
                    $dt_enr = date("Y-m-d H:i:s");
-                    var_dump($dt_enr);
+                    // var_dump($dt_enr);
                     // var_dump( $price_song);
                 ?>
 
@@ -396,9 +401,9 @@ if ($connect == "1" and $_SESSION["userCompte"] == 'ADMINAFP20') // Si le visite
                             for ($i = 0; $i < $nbr_sons; $i++) {
                             ?>
                                 <label style="margin-top:15px;">Titre du son n° <?php echo $i + 1 ?></label>
-                                <input class="form-control" name="titre_son<?php echo $i ?>" type="text" placeholder="Titre">
+                                <input class="form-control" name="titre_son<?php echo $i ?>" type="text" placeholder="Titre" required>
                                 <label style="margin-top:15px;">Ficher du son</label>
-                                <input class="form-control" name="fichier_son<?php echo $i ?>" type="file" placeholder="Fichier">
+                                <input class="form-control" name="fichier_son<?php echo $i ?>" type="file" placeholder="Fichier" required>
                                 <!--<label style="margin-top:15px;">Prix du son</label>-->
                                 <input class="form-control" name="prx_son<?php echo $i ?>" type="text" placeholder="prix du son" value="<?php echo $price_song  ?>" hidden>
                                 <!--<label style="margin-top:15px;">Statut sur le site</label>-->

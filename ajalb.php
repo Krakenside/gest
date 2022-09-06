@@ -536,11 +536,11 @@ if ($connect == "1" and $_SESSION["userCompte"] == 'ADMINAFP20') // Si le visite
 
                                 <label style="margin-top:15px;">Titre du son n° <?php echo $i + 1 ?></label>
 
-                                <input class="form-control" name="titre_son<?php echo $i ?>" type="text" placeholder="">
+                                <input class="form-control" name="titre_son<?php echo $i ?>" type="text" placeholder="" required>
 
                                 <label style="margin-top:15px;">Ficher du son</label>
 
-                                <input class="form-control" name="fichier_son<?php echo $i ?>" type="file" placeholder="">
+                                <input class="form-control" name="fichier_son<?php echo $i ?>" type="file" placeholder="" required>
 
                                 <label style="margin-top:15px;">Prix du son</label>
 
