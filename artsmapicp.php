@@ -56,6 +56,8 @@ $mtn_art_Alb_CFA  = 0;
 $mtn_art_Alb_GNF  = 0;
 $mtn_dons_cfa = 0;
 $mnt_dons_GNF = 0;
+$mtn_dons_alb_cfa = 0;
+$mtn_dons_alb_gnf = 0;
 $mtn_dons_total = 0;
 $nbr_dons = 0;
 
@@ -69,7 +71,7 @@ foreach ($res1 as $key => $value) {
     $st1->execute(array('id_artiste' => $value["id_artiste"]));
     $res2 = $st1->fetchAll();
     foreach ($res2 as $cle2 => $elmt) {
-        var_dump($elmt["titre_son"]);
+        // var_dump($elmt["titre_son"]);
         // var_dump($elmt["id_son"]);
         // $tabinfo[$i][$value["id_artiste"]][1] = 
 
@@ -80,7 +82,7 @@ foreach ($res1 as $key => $value) {
         WHERE transaction.statut_transaction = "SUCCESS" AND date_transaction BETWEEN "2021-01-01%" AND "2022-12-31%" AND (transaction.libelle_transaction LIKE "son-%" AND transaction.libelle_transaction LIKE "%-' . $elmt["id_son"] . '") ';
         $st2 = $bdd->query($reqtrsons);
         $nbr_vt_sons_art += $st2->rowCount();
-        foreach ($st3->fetchAll() as $elmt4) {
+        foreach ($st2->fetchAll() as $elmt4) {
 
             if ($elmt4["id_pays"] == 4) {
                 // echo  'Montant GN : ';
@@ -118,11 +120,15 @@ foreach ($res1 as $key => $value) {
             }
         }
     }
+    //insertion des permieres données dans la bd 
+    // $reqIns_1 = " INSERT INTO banque(Id_artiste_banque,Nom_artiste_banque, " ; 
     echo '<br>';
 
     echo   $nbr_vt_sons_art . '<br>';
-    echo ("Montant Dons sons  CFA " . $mtn_dons_cfa . "<br>");
-    echo ("Montant Dons sons GNF " . $mnt_dons_GNF . "<br>");
+    echo ("Montant Dons sons  CFA " . $mtn_vt_art_cfa . "<br>");
+    echo ("Montant Dons sons GNF " . $mtn_vt_art_GNF . "<br>");
+    echo ("Montant  sons  CFA " . $mtn_dons_cfa . "<br>");
+    echo ("Montant  sons GNF " . $mnt_dons_GNF . "<br>");
     $mtn_vt_art_cfa = 0;
     $mtn_vt_art_GNF = 0;
     $nbr_vt_sons_art = 0;
@@ -174,8 +180,9 @@ foreach ($res1 as $key => $value) {
         $reqtr_don_Alb = 'SELECT *
         FROM TRANSACTION
         INNER JOIN pays ON pays.id_pays = transaction.id_pays
-        WHERE transaction.statut_transaction = "SUCCESS" AND date_transaction BETWEEN "2021-01-01%" AND "2022-12-31%" AND (transaction.libelle_transaction LIKE "album-' . $elmt2["id_album"] . '%") AND transaction.libelle_transaction LIKE "%-don"  ';
+        WHERE transaction.statut_transaction = "SUCCESS" AND date_transaction BETWEEN "2021-01-01%" AND "2022-12-31%" AND (transaction.libelle_transaction LIKE "album-' . $elmt2["titre_album"] . '%") AND transaction.libelle_transaction LIKE "%-don"  ';
         $st8 = $bdd->query($reqtr_don_Alb);
+        // var_dump($reqtr_don_Alb);
         // echo 'Nombre de transactions pour l"album : ' . $elmt2["id_album"] . ' ';
         // echo ($elmt2["prix_album"]);
         // var_dump($st6->rowCount());
@@ -185,11 +192,11 @@ foreach ($res1 as $key => $value) {
             if ($elmtd["id_pays"] == 4) {
                 // echo  'Montant GN : ';
                 // var_dump($elmt3["montant_transaction"].'<br>');
-                $mtn_art_Alb_GNF += $elmtd["montant_transaction"];
+                $mtn_dons_alb_gnf += $elmtd["montant_transaction"];
             } else {
                 // echo 'Montant cfa: ';
                 // var_dump($elmt3["montant_transaction"].'<br>');
-                $mtn_art_Alb_CFA += $elmtd["montant_transaction"];
+                $mtn_dons_alb_cfa += $elmtd["montant_transaction"];
             }
         }
     }
@@ -198,7 +205,8 @@ foreach ($res1 as $key => $value) {
     echo   $nbr_vt_alb . '<br>';
     echo ("Montant ventes Albums CFA " . $mtn_art_Alb_CFA . "<br>");
     echo ("Montant ventes Albums GNF " . $mtn_art_Alb_GNF . "<br>");
-
+    echo ("Montant Dons  Albums CFA " . $mtn_dons_alb_cfa . "<br>");
+    echo ("Montant Dons Albums GNF " . $mtn_dons_alb_gnf . "<br>");
     // les valeurs sont correctes inserons les  dans la bd 
 
     // $reqIns = "INSERT INTO banque(Id_artiste_banque,Nom_artiste_banque,Montant_genere_banque,Montant_alb_cfa_banque,Montant_alb_gnf_banque,     Montant_sons_cfa_banque,Montant_sons_gnf_banque,Montant_dons_cfa_banque,Montant_dons_gnf_banque) 
@@ -216,8 +224,9 @@ foreach ($res1 as $key => $value) {
     $mtn_art_Alb_GNF = 0;
     $mtn_dons_total = 0;
     $nbr_dons = 0;
-
-    //determinons les dons 
+    $mtn_dons_alb_cfa = 0;
+    $mtn_dons_alb_gnf = 0;
+     
 
     if ($i == 2) die;
 }
