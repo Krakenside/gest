@@ -349,7 +349,7 @@ if ($connect == "1" and $_SESSION["userCompte"] == 'ADMINAFP20') // Si le visite
                     $vr_art = explode(" ", $_GET["artiste"]);
                     $nbr_sons = $_GET['nbr_sons'];
                     // $inf = explode(' ', $_GET['infos']);
-                    var_dump($inf);
+                    // var_dump($inf);
                     $reqAlb2 = "SELECT *  FROM album WHERE album.id_album = :idalb";
                     $stAl = $bdd->prepare($reqAlb2);
                     $stAl->execute(
@@ -387,7 +387,7 @@ if ($connect == "1" and $_SESSION["userCompte"] == 'ADMINAFP20') // Si le visite
                             <input type="hidden" name="id_genre" value="<?php echo $resAl["id_genre"]; ?>">
                             <input type="hidden" name="prx_son" value="<?php echo $price_song; ?>">
                             <input name="date_verif" type="hidden"  value"<?php echo $dt_enr ; ?>" hidden>
-                            <input type="hidden" name="tbl" value="ajson" >
+                            <!-- <input type="hidden" name="tbl" value="ajson" > -->
 
 
                             <label style="margin-top:15px;">Artiste</label>
