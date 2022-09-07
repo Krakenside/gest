@@ -60,7 +60,10 @@ $mtn_dons_alb_cfa = 0;
 $mtn_dons_alb_gnf = 0;
 $mtn_dons_total = 0;
 $nbr_dons = 0;
-
+$mtn_gen1 = 0;
+$mtn_gen2 = 0;
+$nbr_vt_sn_gen  = 0;
+$nbr_vt_alb_gen  = 0;
 foreach ($res1 as $key => $value) {
     #pour chaque artiste determinons les sons 
     var_dump($value["nom_artiste"]);
@@ -96,6 +99,7 @@ foreach ($res1 as $key => $value) {
         }
         //determinons les dons pour ce son
 
+
         $reqDons = 'SELECT *
         FROM TRANSACTION
         INNER JOIN pays ON pays.id_pays = transaction.id_pays
@@ -121,14 +125,22 @@ foreach ($res1 as $key => $value) {
         }
     }
     //insertion des permieres données dans la bd 
-    // $reqIns_1 = " INSERT INTO banque(Id_artiste_banque,Nom_artiste_banque, " ; 
+    // $reqInx = "INSERT INTO banque()" ;
     echo '<br>';
+    $mtn_gen1 += $mtn_vt_art_cfa + $mtn_dons_cfa;
+    $mtn_gen2 += $mtn_vt_art_GNF + $mnt_dons_GNF;
+    $nbr_vt_sn_gen  += $nbr_vt_sons_art;
+
+    // $mtn_gen1 += $mtn_dons_cfa;
+    // $mtn_gen2 += $mnt_dons_GNF;
 
     echo   $nbr_vt_sons_art . '<br>';
-    echo ("Montant Dons sons  CFA " . $mtn_vt_art_cfa . "<br>");
-    echo ("Montant Dons sons GNF " . $mtn_vt_art_GNF . "<br>");
-    echo ("Montant  sons  CFA " . $mtn_dons_cfa . "<br>");
-    echo ("Montant  sons GNF " . $mnt_dons_GNF . "<br>");
+    echo ("Montant  sons  CFA " . $mtn_vt_art_cfa . "<br>");
+    echo ("Montant  sons GNF " . $mtn_vt_art_GNF . "<br>");
+    echo ("Montant Dons sons  CFA " . $mtn_dons_cfa . "<br>");
+    echo ("Montant Dons sons GNF " . $mnt_dons_GNF . "<br>");
+    echo ("Montant gen CFA " . $mtn_gen1 . "<br>");
+    echo ("Montant gen GNF " . $mtn_gen2 . "<br>");
     $mtn_vt_art_cfa = 0;
     $mtn_vt_art_GNF = 0;
     $nbr_vt_sons_art = 0;
@@ -175,6 +187,8 @@ foreach ($res1 as $key => $value) {
             }
         }
         // var_dump($st6->rowCount());
+        // $mtn_gen1 += $mtn_art_Alb_CFA;
+        // $mtn_gen2 += $mtn_art_Alb_GNF;
 
 
         $reqtr_don_Alb = 'SELECT *
@@ -201,24 +215,39 @@ foreach ($res1 as $key => $value) {
         }
     }
     echo '<br>';
+
+    $mtn_gen1 +=  $mtn_dons_alb_cfa + $mtn_art_Alb_CFA;
+    $mtn_gen2 +=  $mtn_dons_alb_gnf + $mtn_art_Alb_GNF;
+    $nbr_vt_sn_gen  += $nbr_vt_alb;
+
+
+
     $i++;
     echo   $nbr_vt_alb . '<br>';
     echo ("Montant ventes Albums CFA " . $mtn_art_Alb_CFA . "<br>");
     echo ("Montant ventes Albums GNF " . $mtn_art_Alb_GNF . "<br>");
     echo ("Montant Dons  Albums CFA " . $mtn_dons_alb_cfa . "<br>");
     echo ("Montant Dons Albums GNF " . $mtn_dons_alb_gnf . "<br>");
+    echo ("Montant gen CFA " . $mtn_gen1 . "<br>");
+    echo ("Montant gen GNF " . $mtn_gen2 . "<br>");
+
+    // echo("")
     // les valeurs sont correctes inserons les  dans la bd 
 
-    // $reqIns = "INSERT INTO banque(Id_artiste_banque,Nom_artiste_banque,Montant_genere_banque,Montant_alb_cfa_banque,Montant_alb_gnf_banque,     Montant_sons_cfa_banque,Montant_sons_gnf_banque,Montant_dons_cfa_banque,Montant_dons_gnf_banque) 
-    //     VALUES(:Id_artiste_banque,:Nom_artiste_banque,:Montant_genere_banque,:Montant_alb_cfa_banque,:Montant_alb_gnf_banque,   :Montant_sons_cfa_banque,:Montant_sons_gnf_banque,:Montant_dons_cfa_banque,:Montant_dons_gnf_banque) ";
-
-    // $stIns = $bdd->prepare($reqIns);
-
-    // $stIns->execute(array(
-    //     'Id_artiste_banque' => $value["id_artiste"],
-    //     'Nom_artiste_banque' => $value["nom_artiste"],
-    //     'Montant_alb_cfa_banque' => $mtn_art_Alb_CFA
-    // ));
+    $resQins = "UPDATE banque SET Montant_gen_cfa_banque = :Montant_gen_cfa_banque,
+    Montant_gen_gnf_banque =:Montant_gen_gnf_banque,
+    Nbr_vt_alb__banque=:Nbr_vt_alb__banque,Nbr_vt_sons_banque=:Nbr_vt_sons_banque
+    WHERE banque.Id_artiste_banque = :id_art";
+    $stQ = $bdd->prepare($resQins);
+    $stQ->execute(
+        array(
+            'Montant_gen_cfa_banque' => $mtn_gen1,
+            'Montant_gen_gnf_banque' => $mtn_gen2,
+            'Nbr_vt_alb__banque' => $nbr_vt_alb_gen,
+            'Nbr_vt_sons_banque' => $nbr_vt_sn_gen,
+            'id_art' => $value["id_artiste"]
+        )
+    );
     $nbr_vt_alb = 0;
     $mtn_art_Alb_CFA = 0;
     $mtn_art_Alb_GNF = 0;
@@ -226,9 +255,14 @@ foreach ($res1 as $key => $value) {
     $nbr_dons = 0;
     $mtn_dons_alb_cfa = 0;
     $mtn_dons_alb_gnf = 0;
-     
+    $mtn_gen1 = 0;
+    $mtn_gen2 = 0;
+    $nbr_vt_alb_gen  = 0;
+    $nbr_vt_sn_gen = 0;
 
-    if ($i == 2) die;
+
+
+    // if ($i == 4) die;
 }
 
 

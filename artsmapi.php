@@ -19,7 +19,7 @@ require 'connexion.php';
 // $dtf1 = $dt1."%";
 // $dtf2 = $dt2."%";
 // echo $test;
-
+$tabinfo[][] = 0;
 $mtnalbumgn = array();
 $mtsngn = array();
 
@@ -41,401 +41,232 @@ $reA = "SELECT * FROM artiste ";
 
 
 $artart = $bdd->query($reA);
-
+// var_dump($artart->fetchAll());
 // print_r($_GET['dest2']);
 
-// determinons les revenus générés pour l'artiste vi&a ses albums 
+// determinons les sons pour cet artiste donné 
+$res1 = $artart->fetchAll();
+$nbr_art = $artart->rowCount();
+$i = 0;
+$nbr_vt_sons_art = 0;
+$nbr_vt_alb = 0;
+$mtn_vt_art_cfa = 0;
+$mtn_vt_art_GNF = 0;
+$mtn_art_Alb_CFA  = 0;
+$mtn_art_Alb_GNF  = 0;
+$mtn_dons_cfa = 0;
+$mnt_dons_GNF = 0;
+$mtn_dons_alb_cfa = 0;
+$mtn_dons_alb_gnf = 0;
+$mtn_dons_total = 0;
+$nbr_dons = 0;
+$mtn_gen1 = 0;
+$mtn_gen2 = 0;
+$nbr_vt_sn_gen  = 0;
+$nbr_vt_alb_gen  = 0;
+foreach ($res1 as $key => $value) {
+    #pour chaque artiste determinons les sons 
+    var_dump($value["nom_artiste"]);
+    echo '<br>';
 
-$nbT = [];
+    $reqsong = "SELECT * FROM son WHERE son.id_artiste = :id_artiste";
+    $st1 = $bdd->prepare($reqsong);
+    $st1->execute(array('id_artiste' => $value["id_artiste"]));
+    $res2 = $st1->fetchAll();
+    foreach ($res2 as $cle2 => $elmt) {
+        // var_dump($elmt["titre_son"]);
+        // var_dump($elmt["id_son"]);
+        // $tabinfo[$i][$value["id_artiste"]][1] = 
 
-$affich_el = [];
+        #determinons les transactions pour ce son 
+        $reqtrsons = 'SELECT *
+        FROM TRANSACTION
+        INNER JOIN pays ON pays.id_pays = transaction.id_pays
+        WHERE transaction.statut_transaction = "SUCCESS" AND date_transaction BETWEEN "2021-01-01%" AND "2022-12-31%" AND (transaction.libelle_transaction LIKE "son-%" AND transaction.libelle_transaction LIKE "%-' . $elmt["id_son"] . '") ';
+        $st2 = $bdd->query($reqtrsons);
+        $nbr_vt_sons_art += $st2->rowCount();
+        foreach ($st2->fetchAll() as $elmt4) {
 
-$affich_el[0] = 1;
-
-$indxArt = 1;
-
-$indxGbl = 1;
-$chifrAfglo = 0;
-
-
-
-while ($art = $artart->fetch()) {
-
-    $nbTrxa = 0;
-
-    $nbTrxb = 0;
-
-    $affich_el[$indxGbl][0] = $art['nom_artiste'];
-    $mtsngn[$indxGbl][0] = 0;
-    $mtsngn[$indxGbl][1] = 0;
-    $mtnalbumgn[$indxGbl][0] = 0;
-    $mtnalbumgn[$indxGbl][1] = 0;
-
-    $re = "SELECT * FROM artiste INNER JOIN son
-    
-            ON son.id_artiste = artiste.id_artiste
-    
-            WHERE artiste.id_artiste = '" . $art['id_artiste'] . "'";
-
-    $re2 = "SELECT * FROM artiste INNER JOIN album
-    
-                                                                        ON album.id_artiste = artiste.id_artiste
-    
-                                                                         WHERE artiste.id_artiste = '" . $art['id_artiste'] . "'";
-
-
-
-    $arts = $bdd->query($re);
-
-    $nbarts = $arts->rowCount();
-
-    $arta = $bdd->query($re2);
-
-    $nbarta = $arta->rowCount();
-
-    $chx1 = "";
-
-    $chx = "";
-
-
-
-
-    $taux = 1;
-
-    $rsltTx['signe_devise'] = 'FCFA';
-
-
-
-
-    $i = 0;
-
-    $u = 0;
-
-    $idxPys = 1;
-
-
-
-    $listSn = [];
-
-    while ($artistsn = $arts->fetch()) {
-
-        $chifrAf = 0;
-        $caglbSon = 0;
-        $nbTrx = 0;
-        $chifrAfsgn = 0;
-        $chifrAfAlsgn = 0;
-
-        $listSn[$i][0] = $artistsn['reference_son'];
-        $test41 = 0;
-        // var_dump($artistsn['id_son']);
-
-        // $chx = 'son-'.$artistsn['titre_son'].'-'.$artistsn['id_son'];
-
-
-
-        $re3 = 'SELECT * FROM transaction 
-        INNER JOIN pays on pays.id_pays = transaction.id_pays 
-        WHERE transaction.statut_transaction = "SUCCESS"   AND date_transaction BETWEEN "2021-01-01%" AND "2021-12-31%" AND  (transaction.libelle_transaction LIKE "son-%"  AND transaction.libelle_transaction LIKE "%-' . $artistsn['id_son'] . '") ';
-
-
-
-        // echo $re3;
-
-        $un = $bdd->query($re3);
-
-        // $un2 = $bdd -> query($re4);
-
-        $nbTrs = $un->rowCount();
-
-        $nbTrxa += $nbTrs;
-
-        $nbTrx += $nbTrs;
-
-
-
-
-
-
-        // }
-        foreach ($un->fetchAll() as $eltsn) {
-            // $chifrAf += intval($eltsn['montant_transaction']);
-            $test41 = $eltsn['nom_pays'];
-            // echo $test41.' ';
-            // echo $artistsn['id_son'].' ';
-            // echo   intval($eltsn['montant_transaction']).' ';
-            // echo $art['id_artiste'].'<br> '  ;
-            if ($test41 == 'Guinee') {
-
-                $mtsngn[$indxGbl][0] +=  intval($eltsn['montant_transaction']);
-                // echo intval($eltsn['montant_transaction'])/10;
+            if ($elmt4["id_pays"] == 4) {
+                // echo  'Montant GN : ';
+                // var_dump($elmt3["montant_transaction"]);
+                $mtn_vt_art_GNF += $elmt4["montant_transaction"];
             } else {
-
-                $chifrAfsgn +=  intval($eltsn['montant_transaction']);
-                $mtsngn[$indxGbl][1] =  $chifrAfsgn;
+                // echo 'Montant cfa: ';
+                // var_dump($elmt3["montant_transaction"]);
+                $mtn_vt_art_cfa += $elmt4["montant_transaction"];
             }
         }
-        // $mtsngn[$indxGbl][$art['id_artiste']][0] = $chifrAf;
+        //determinons les dons pour ce son
 
-        $listSn[$i][1] = $artistsn['titre_son'];
 
-        $listSn[$i][2] = $artistsn['prix_son'] / $taux;
+        $reqDons = 'SELECT *
+        FROM TRANSACTION
+        INNER JOIN pays ON pays.id_pays = transaction.id_pays
+        WHERE transaction.statut_transaction = "SUCCESS" AND date_transaction BETWEEN "2021-01-01%" AND "2022-12-31%" AND (transaction.libelle_transaction LIKE "son-' . $elmt["titre_son"] . '%") AND transaction.libelle_transaction LIKE "%-don" ';
+        $st3 = $bdd->query($reqDons);
+        // var_dump($reqDons);
+        // echo 'Nombre de transactions pour le son : ' . $elmt["titre_son"] . ' ';
+        // var_dump($st3->rowCount());
 
-        $listSn[$i][3] = $nbTrs;
 
-        $listSn[$i][4] = $chifrAfsgn . ' ' . $rsltTx['signe_devise'];
+        $nbr_dons += $st3->rowCount();
+        foreach ($st3->fetchAll() as $elmt3) {
 
-        $i++;
-
-        $idxPys++;
-        // var_dump($artistsn);
+            if ($elmt3["id_pays"] == 4) {
+                // echo  'Montant GN : ';
+                // var_dump($elmt3["montant_transaction"]);
+                $mnt_dons_GNF += $elmt3["montant_transaction"];
+            } else {
+                // echo 'Montant cfa: ';
+                // var_dump($elmt3["montant_transaction"]);
+                $mtn_dons_cfa += $elmt3["montant_transaction"];
+            }
+        }
     }
+    //insertion des permieres données dans la bd 
+    // $reqInx = "INSERT INTO banque()" ;
+    echo '<br>';
+    $mtn_gen1 += $mtn_vt_art_cfa + $mtn_dons_cfa;
+    $mtn_gen2 += $mtn_vt_art_GNF + $mnt_dons_GNF;
+    $nbr_vt_sn_gen  += $nbr_vt_sons_art;
 
-    $affich_el[$indxGbl][1]['son'] = $listSn;
+    // $mtn_gen1 += $mtn_dons_cfa;
+    // $mtn_gen2 += $mnt_dons_GNF;
 
-    $nbT[0] = $nbTrxa;
-
-
-
-    $listAl = [];
-
-    while ($artistalb = $arta->fetch()) {
-
-
-        $chifrAfsgn = 0;
-        $chifrAf = 0;
-
-        $nbTrx = 0;
-        $test41 = "";
-        $listAl[$u][0] = $artistalb['reference_album'];
-
-        // $chx1 = 'album-'.$artistalb['titre_album'].'-'.$artistalb['id_album'];
+    echo   $nbr_vt_sons_art . '<br>';
+    echo ("Montant  sons  CFA " . $mtn_vt_art_cfa . "<br>");
+    echo ("Montant  sons GNF " . $mtn_vt_art_GNF . "<br>");
+    echo ("Montant Dons sons  CFA " . $mtn_dons_cfa . "<br>");
+    echo ("Montant Dons sons GNF " . $mnt_dons_GNF . "<br>");
+    echo ("Montant gen CFA " . $mtn_gen1 . "<br>");
+    echo ("Montant gen GNF " . $mtn_gen2 . "<br>");
+    $mtn_vt_art_cfa = 0;
+    $mtn_vt_art_GNF = 0;
+    $nbr_vt_sons_art = 0;
+    $mtn_dons_cfa = 0;
+    $mnt_dons_GNF = 0;
 
 
+    #determinons les transactions pour chaque album
 
-        $re4 = 'SELECT * FROM transaction
+    $reqAlb = "SELECT * FROM album where album.id_artiste = :id_art";
+    $st4 =  $bdd->prepare($reqAlb);
+    $st4->execute(
+        array(
+            'id_art' => $value["id_artiste"]
+        )
+    );
+
+    foreach ($st4->fetchAll() as $cle2 => $elmt2) {
+        // var_dump($elmt["titre_son"]);
+        // var_dump($elmt["id_son"]);
+        // $tabinfo[$i][$value["id_artiste"]][1] = 
+
+        #determinons les transactions pour ce album
+        $reqtrAlb = 'SELECT * FROM transaction 
         INNER JOIN pays on pays.id_pays = transaction.id_pays 
-         WHERE transaction.statut_transaction = "SUCCESS"  AND date_transaction BETWEEN "2021-01-01%" AND "2021-12-31%" AND (transaction.libelle_transaction LIKE "album-%" AND transaction.libelle_transaction LIKE "%-' . $artistalb['id_album'] . '")';
+        WHERE transaction.statut_transaction = "SUCCESS"   
+        AND date_transaction BETWEEN "2021-01-01%" AND "2022-12-31%"
+         AND  (transaction.libelle_transaction LIKE "album-%"  AND transaction.libelle_transaction LIKE "%-' . $elmt2["id_album"] . '") ';
+        $st6 = $bdd->query($reqtrAlb);
+        // echo 'Nombre de transactions pour l"album : ' . $elmt2["id_album"] . ' ';
+        // echo ($elmt2["prix_album"]);
+        // var_dump($st6->rowCount());
+        $nbr_vt_alb += $st6->rowCount();
+        foreach ($st6->fetchAll() as $elmt3) {
 
-
-
-        // echo $re3;
-
-        $un1 = $bdd->query($re4);
-
-        // $un2 = $bdd -> query($re4);
-
-        $nbTra = $un1->rowCount();
-
-        $nbTrxb += $nbTra;
-
-        $nbTrx += $nbTra;
-
-
-
-        // $elt = $un->fetch();
-
-        foreach ($un1->fetchAll() as $eltalgn) {
-            $test41 = $eltalgn['nom_pays'];
-            if ($test41 == 'Guinee') {
-
-                $mtnalbumgn[$indxGbl][0] +=  intval($eltalgn['montant_transaction']);
+            if ($elmt3["id_pays"] == 4) {
+                // echo  'Montant GN : ';
+                // var_dump($elmt3["montant_transaction"].'<br>');
+                $mtn_art_Alb_GNF += $elmt3["montant_transaction"];
             } else {
-
-                $chifrAfAlsgn +=  intval($eltsn['montant_transaction']);
-                $mtnalbumgn[$indxGbl][1] =  $chifrAfAlsgn;
+                // echo 'Montant cfa: ';
+                // var_dump($elmt3["montant_transaction"].'<br>');
+                $mtn_art_Alb_CFA += $elmt3["montant_transaction"];
             }
-            // echo 'elmt';
-            // var_dump($eltalgn['nom_transaction']);
-            // echo 'montant Gn';
-            // var_dump($mtnalbumgn[$indxGbl][0]);
-            // echo 'montant SGn';
-            // var_dump($mtnalbumgn[$indxGbl][1]);
         }
+        // var_dump($st6->rowCount());
+        // $mtn_gen1 += $mtn_art_Alb_CFA;
+        // $mtn_gen2 += $mtn_art_Alb_GNF;
 
 
-        $listAl[$u][1] = $artistalb['titre_album'];
+        $reqtr_don_Alb = 'SELECT *
+        FROM TRANSACTION
+        INNER JOIN pays ON pays.id_pays = transaction.id_pays
+        WHERE transaction.statut_transaction = "SUCCESS" AND date_transaction BETWEEN "2021-01-01%" AND "2022-12-31%" AND (transaction.libelle_transaction LIKE "album-' . $elmt2["titre_album"] . '%") AND transaction.libelle_transaction LIKE "%-don"  ';
+        $st8 = $bdd->query($reqtr_don_Alb);
+        // var_dump($reqtr_don_Alb);
+        // echo 'Nombre de transactions pour l"album : ' . $elmt2["id_album"] . ' ';
+        // echo ($elmt2["prix_album"]);
+        // var_dump($st6->rowCount());
+        $nbr_vt_alb += $st8->rowCount();
+        foreach ($st8->fetchAll() as $elmtd) {
 
-        $listAl[$u][2] = $artistalb['prix_album'] / $taux;
-
-        $listAl[$u][3] = $nbTra;
-
-        $listAl[$u][4] = $chifrAfAlsgn . ' ' . $rsltTx['signe_devise'];
-
-        $u++;
-
-        $idxPys++;
-
-
-
-        // $i++;
-
-        // $idxPys++;
-
+            if ($elmtd["id_pays"] == 4) {
+                // echo  'Montant GN : ';
+                // var_dump($elmt3["montant_transaction"].'<br>');
+                $mtn_dons_alb_gnf += $elmtd["montant_transaction"];
+            } else {
+                // echo 'Montant cfa: ';
+                // var_dump($elmt3["montant_transaction"].'<br>');
+                $mtn_dons_alb_cfa += $elmtd["montant_transaction"];
+            }
+        }
     }
+    echo '<br>';
 
-    $affich_el[$indxGbl][1]['album'] = $listAl;
-
-    $nbT[1] = $nbTrxb;
-
-    $affich_el[$indxGbl][2] = $nbT;
-
-    $indxGbl++;
-
-
-    // $idxPys++;
-
-
-    $affich_e = array_shift($affich_el);
-
-    //var_dump($affich_e);
-
-    //var_dump($affich_el);
-    // print_r($affich_el);
+    $mtn_gen1 +=  $mtn_dons_alb_cfa + $mtn_art_Alb_CFA;
+    $mtn_gen2 +=  $mtn_dons_alb_gnf + $mtn_art_Alb_GNF;
+    $nbr_vt_sn_gen  += $nbr_vt_alb;
 
 
 
-    //echo json_encode($affich_el);
+    $i++;
+    echo   $nbr_vt_alb . '<br>';
+    echo ("Montant ventes Albums CFA " . $mtn_art_Alb_CFA . "<br>");
+    echo ("Montant ventes Albums GNF " . $mtn_art_Alb_GNF . "<br>");
+    echo ("Montant Dons  Albums CFA " . $mtn_dons_alb_cfa . "<br>");
+    echo ("Montant Dons Albums GNF " . $mtn_dons_alb_gnf . "<br>");
+    echo ("Montant gen CFA " . $mtn_gen1 . "<br>");
+    echo ("Montant gen GNF " . $mtn_gen2 . "<br>");
 
-    //echo json_encode($affich_el);
-    // var_dump($mtsngn[1][0]);
-    // var_dump($mtnalbumgn[1][0]);
-    //var_dump($mtsngn);
-    //var_dump($mtnalbumgn);
+    // echo("")
+    // les valeurs sont correctes inserons les  dans la bd 
 
-    $tablen =  sizeof($affich_el);
-    //var_dump($mtsngn);
-    //faire une boucle sur les lignes principales pour recuperer les infos principales 
-    $tabinfo = [];
-    $j = 0;
-    $indx = 0;
-    $smgen = 0;
-    $smgenal = 0;
-    $somdon = 0;
-    $tempsout = 0;
-    for ($i = 0; $i < $tablen; $i++) {
-        //nom de l'artiste 
-        $tabinfo[$i][0] = $affich_el[$i][0];
-        //nombre singles vendus
-        $tabinfo[$i][1] = $affich_el[$i][2][0];
-        //nombre d'albums vendus
-        $tabinfo[$i][2] = $affich_el[$i][2][1];
-        //print_r($tabinfo[$i][0]);
-        // print_r($affich_el[$j][1]['son'][0][4]);
-        // determiner le nombre de sons 
-        $lentabson = sizeof($affich_el[$j][1]['son']);
-        // var_dump($lentabson);
-        //determiner le nombre d'albums
-        $lentabalbum = sizeof($affich_el[$i][1]['album']);
-        //var_dump($affich_el[$i][1]['album']);
-        // echo $lentabson."<br>";
-        $temp = 0;
-        //montants des singles  en CFA 
-        $tabinfo[$i][3] = $mtsngn[$i + 1][1] + ($mtsngn[$i + 1][0] / 10);
-        //montant des singles en GNF 
-        //$tabinfo[$i][4] = $mtsngn[$i + 1][0];
-        //montant ventes des Albums  en CFA 
-        $tabinfo[$i][4] =  $mtnalbumgn[$i + 1][1] + ($mtnalbumgn[$i + 1][0] / 10);
-        //montant ventes des Albums  en GNF 
-        // $tabinfo[$i][5] =;
-
-        // $tabinfo[$i][4] = 
-        //boucler sur les son et retourner les sommes 
-
-        // for ($k = 0; $k < $lentabson; $k++) {
-
-        //     $smgentempson = strstr($affich_el[$i][1]['son'][$k][4], ' ', true);
-        //    // echo  $smgentempson;
-        //     // $smgentempalb = strstr($affich_el[$i][1]['album'][$k][4], 'C', true);
-        //     // var_dump($affich_el[$i][1]['album'][0][4]);
-        //     $temp += intval($smgentempson);
-        //     // var_dump($temp);
-        //     $smgen +=  $temp;
-        //     $tabinfo[$i][3] = $smgen;
-        //     $tabinfo[$i][3] .= " " . $resdef['signe_devise'];
-        // }
-        // $smgen = 0;
-        //boucler sur les albums et retourner les sommes 
-        // $tempal = 0;
-        // for ($l = 0; $l < $lentabalbum; $l++) {
-        //     // var_dump($affich_el[$i][1]['album'][0][4]);
-        //     $smgentempalb = strstr($affich_el[$i][1]['album'][0][4], ' ', true);
-        //     $tempal += intval($smgentempalb);
-        //     $smgenal += $tempal;
-        //     $tabinfo[$i][7] =  $smgenal;
-        //     $tabinfo[$i][8] .= " ";
-        // }
-        // $smgenal = 0;
-        //var_dump($tabinfo[$i][3]);
+    $resQins = "UPDATE banque SET Montant_gen_cfa_banque = :Montant_gen_cfa_banque,
+    Montant_gen_gnf_banque =:Montant_gen_gnf_banque,
+    Nbr_vt_alb__banque=:Nbr_vt_alb__banque,Nbr_vt_sons_banque=:Nbr_vt_sons_banque
+    WHERE banque.Id_artiste_banque = :id_art";
+    $stQ = $bdd->prepare($resQins);
+    $stQ->execute(
+        array(
+            'Montant_gen_cfa_banque' => $mtn_gen1,
+            'Montant_gen_gnf_banque' => $mtn_gen2,
+            'Nbr_vt_alb__banque' => $nbr_vt_alb_gen,
+            'Nbr_vt_sons_banque' => $nbr_vt_sn_gen,
+            'id_art' => $value["id_artiste"]
+        )
+    );
+    $nbr_vt_alb = 0;
+    $mtn_art_Alb_CFA = 0;
+    $mtn_art_Alb_GNF = 0;
+    $mtn_dons_total = 0;
+    $nbr_dons = 0;
+    $mtn_dons_alb_cfa = 0;
+    $mtn_dons_alb_gnf = 0;
+    $mtn_gen1 = 0;
+    $mtn_gen2 = 0;
+    $nbr_vt_alb_gen  = 0;
+    $nbr_vt_sn_gen = 0;
 
 
-        //recuperer les soutiens pour un artiste donné
-        $reart = $bdd->query('select id_artiste from artiste where nom_artiste = "' . $tabinfo[$i][0] . '"');
-        $resArt = $reart->fetch();
-        $reart->closeCursor();
-        //print_r($resArt);
-        $tabinfo[$i][5] = 0;
-        $tabinfo[$i][6] = 0;
-        $reqdon1 = 'SELECT DISTINCTROW transaction.id_transaction,don.somme_don,transaction.libelle_transaction,pays.code_pays,pays.nom_pays    from don
-                            INNER JOIN transaction ON transaction.id_transaction = don.id_transaction
-                            INNER JOIN pays ON pays.id_pays= transaction.id_pays
-                            INNER JOIN artiste ON artiste.id_artiste = don.id_artiste
-                            WHERE don.id_artiste="' . $resArt['id_artiste'] . '"
-                            AND transaction.statut_transaction="SUCCESS"   
-                            AND transaction.date_transaction BETWEEN "2021-01-01%" AND "2021-12-31%"';
-        $re24 = $bdd->query($reqdon1);
 
-
-        $intval = 0;
-        // var_dump($re24->fetchAll());
-        foreach ($re24->fetchAll() as $ln) {
-
-            if ($ln['code_pays'] != 'GN') {
-                //var_dump($ln['somme_don']);
-                $intval  = intval($ln['somme_don']);
-                //var_dump($intval);
-                $tabinfo[$i][5] +=  $intval;
-                // $tabinfo[$i][5] .= " FCFA" ;
-                //var_dump( $tabinfo[$i][5]);
-
-            } else {
-
-                $intval  = intval($ln['somme_don']);
-                //var_dump($intval);
-                $tabinfo[$i][5] += ($intval) / 10;
-                //$tabinfo[$i][6] .= " GNF" ;
-            }
-            $intval = 0;
-            $tabinfo[$i][6] = intval($resArt['id_artiste']);
-        }
-        $re24->closeCursor();
-
-    //attribuer les infos a des variables 
-    $mtnbnk =  $tabinfo[$i][3];
-    $nomart = $tabinfo[$i][0];
-    $idart =  $tabinfo[$i][6];
-    // var_dump($affich_el);
-    // vidons la table 
-    // $sql = "TRUNCATE TABLE `banque`";
-
-    // //Prepare the SQL query.
-    // $statement = $pdo->prepare($sql);
-
-    // //Execute the statement.
-    // $statement->execute();
-
-
-    // //insertion dans la base de données 
-    // $reqinsbnk = "INSERT INTO banque(Id_artiste_banque,Nom_artiste_banque,Montant_disponible_banque)
-    //                      VALUES(:idart,:nomart,:montant)";
-    // $ext = $bdd->prepare($reqinsbnk);
-    // $ext->execute(array(
-    //     'idart' => $idart,
-    //     'nomart' => $nomart,
-    //     'montant' => $mtnbnk
-    // ));
-    // $mtnbnk = 0;
-    // $nomart = '';
-    // $ext->closeCursor();
+    // if ($i == 4) die;
 }
-echo json_encode($tabinfo, JSON_PRETTY_PRINT);
-}
+
+
+
+
+
+// echo json_encode($tabinfo, JSON_PRETTY_PRINT);
