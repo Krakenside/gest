@@ -169,7 +169,7 @@ if ($connect == "1" and $_SESSION["userCompte"] == 'ADMINAFP20') // Si le visite
                 <thead>
                   <tr>
                     <th>Artiste</th>
-                    <th>Montant disponible en banque </th>
+                    <th>Montant disponible en banque CFA </th>
                     <th>Montant déja réglé</th>
                     <th>Action </th>
 
@@ -199,7 +199,7 @@ if ($connect == "1" and $_SESSION["userCompte"] == 'ADMINAFP20') // Si le visite
               $res2 = $rsbnqst->fetch();
               // var_dump($res2);
               $nmart = $res2["Nom_artiste_banque"];
-              $mtndispo =  $res2["Montant_disponible_banque"];
+              $mtndispo =  $res2["Montant_gen_cfa_banque"];
               $mtdej = $res2["Montant_deja_reglé_banque"];
               $idart = $res2['reference_banque'];
 

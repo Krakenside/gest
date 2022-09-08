@@ -45,15 +45,16 @@ if (isset($_GET['fct']) && ($_GET['fct'] == "1")) {
 
         // var_dump($elt);
 
-        $i = 0;
+        $i = -1;
 
         $affichel[][] = '';
 
         foreach ($elt as $key) {
+            // var_dump($key['id_artiste']);
 
             # selectioner l'artiste concerné dans la table banque 
 
-            $reqartbnk = "SELECT * FROM banque WHERE banque.Nom_artiste_banque =:nmart ";
+            $reqartbnk = "SELECT * FROM banque WHERE banque.Id_artiste_banque =:nmart ";
 
             $req2st = $bdd->prepare($reqartbnk);
 
@@ -61,7 +62,7 @@ if (isset($_GET['fct']) && ($_GET['fct'] == "1")) {
 
                 array(
 
-                    'nmart' => $key['nom_artiste']
+                    'nmart' => $key['id_artiste']
 
                 )
 
@@ -69,7 +70,7 @@ if (isset($_GET['fct']) && ($_GET['fct'] == "1")) {
 
             $res = $req2st->fetch();
 
-            #var_dump($res);
+            // var_dump($res);
 
             if ($res) {
 
@@ -77,7 +78,7 @@ if (isset($_GET['fct']) && ($_GET['fct'] == "1")) {
 
                 $affichel[$i][0] = $res['Nom_artiste_banque'];
 
-                $affichel[$i][1] = $res['Montant_disponible_banque'];
+                $affichel[$i][1] = $res['Montant_gen_cfa_banque'];
 
                 $affichel[$i][2] = $res['Montant_deja_reglé_banque'];
 
@@ -1021,7 +1022,7 @@ if (isset($_GET['fct']) && ($_GET['fct'] == "1")) {
         //  var_dump($cover);
 
         //  var_dump($_POST["prx_son" . $i . ""]);
-         
+
 
         //  var_dump($url);
 
@@ -1049,7 +1050,7 @@ if (isset($_GET['fct']) && ($_GET['fct'] == "1")) {
 
         $st = $bdd->prepare($reqex);
 
-        $st->execute(array('titre' => $titre,'id_artiste'=>$id_art));
+        $st->execute(array('titre' => $titre, 'id_artiste' => $id_art));
 
         $resex = $st->fetch();
 

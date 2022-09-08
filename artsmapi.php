@@ -80,7 +80,7 @@ foreach ($res1 as $key => $value) {
 
         #determinons les transactions pour ce son 
         $reqtrsons = 'SELECT *
-        FROM TRANSACTION
+        FROM transaction
         INNER JOIN pays ON pays.id_pays = transaction.id_pays
         WHERE transaction.statut_transaction = "SUCCESS" AND date_transaction BETWEEN "2021-01-01%" AND "2022-12-31%" AND (transaction.libelle_transaction LIKE "son-%" AND transaction.libelle_transaction LIKE "%-' . $elmt["id_son"] . '") ';
         $st2 = $bdd->query($reqtrsons);
@@ -101,7 +101,7 @@ foreach ($res1 as $key => $value) {
 
 
         $reqDons = 'SELECT *
-        FROM TRANSACTION
+        FROM transaction
         INNER JOIN pays ON pays.id_pays = transaction.id_pays
         WHERE transaction.statut_transaction = "SUCCESS" AND date_transaction BETWEEN "2021-01-01%" AND "2022-12-31%" AND (transaction.libelle_transaction LIKE "son-' . $elmt["titre_son"] . '%") AND transaction.libelle_transaction LIKE "%-don" ';
         $st3 = $bdd->query($reqDons);
@@ -192,7 +192,7 @@ foreach ($res1 as $key => $value) {
 
 
         $reqtr_don_Alb = 'SELECT *
-        FROM TRANSACTION
+        FROM transaction
         INNER JOIN pays ON pays.id_pays = transaction.id_pays
         WHERE transaction.statut_transaction = "SUCCESS" AND date_transaction BETWEEN "2021-01-01%" AND "2022-12-31%" AND (transaction.libelle_transaction LIKE "album-' . $elmt2["titre_album"] . '%") AND transaction.libelle_transaction LIKE "%-don"  ';
         $st8 = $bdd->query($reqtr_don_Alb);
