@@ -80,11 +80,19 @@ if (isset($_GET['fct']) && ($_GET['fct'] == "1")) {
 
                 $affichel[$i][1] = $res['Montant_gen_cfa_banque'];
 
-                $affichel[$i][2] = $res['Montant_deja_reglé_banque'];
+                $affichel[$i][2] = $res['Montant_gen_gnf_banque'];
 
-                $affichel[$i][3] = "<a href='ajoutartbnk.php?chart=" . $res['reference_banque'] . "' class='btn btn-success' >Payer</a>";
+                $affichel[$i][3] = $res['Nbr_vt_sons_banque'];
 
-                $affichel[$i][4] = $res['reference_banque'];
+                $affichel[$i][4] = $res['Nbr_vt_alb__banque'];
+
+                $affichel[$i][5] = $res['Montant_deja_reglé_banque'];
+
+                $affichel[$i][6] = $res['Montant_deja_reglé_banque_GNF'];
+
+                $affichel[$i][7] = "<a href='ajoutartbnk.php?chart=" . $res['reference_banque'] . "' class='btn btn-success' >Payer</a>";
+
+                // $affichel[$i][6] = $res['reference_banque'];
             }
 
 
@@ -161,14 +169,16 @@ if (isset($_GET['fct']) && ($_GET['fct'] == "1")) {
         // var_dump($error);
 
         $payment = (int) $_GET['apy'];
+        $payment2 = (int) $_GET['apy_gnf'];
 
         // var_dump($payment);
 
         $val = (int)$_GET['limite'];
+        $val_gnf = (int)$_GET['limite_gn'];
 
 
 
-        if ($payment > $val) {
+        if (($payment > $val) or ($payment2 > $val_gnf)) {
 
             $error = 'true';
 
@@ -186,7 +196,10 @@ if (isset($_GET['fct']) && ($_GET['fct'] == "1")) {
 
             // $id = 1;
 
+            #si le montant generé et disponible n'est pas dpassé alors on continue
+
             $payment = (int) $_GET['apy'];
+            $payment2 = (int) $_GET['apy_gnf'];
 
             // var_dump($payment);
 
@@ -200,7 +213,7 @@ if (isset($_GET['fct']) && ($_GET['fct'] == "1")) {
 
 
 
-
+            // on determine l'artiste donné 
 
             $reqsle = 'SELECT * FROM   banque WHERE Nom_artiste_banque = :nm';
 
@@ -219,16 +232,37 @@ if (isset($_GET['fct']) && ($_GET['fct'] == "1")) {
             // var_dump($dt['value1']);
 
             // var_dump($dt['Montant_disponible_banque']);
+            //montant disponible en banque 
 
             $sm =  $dt['Montant_disponible_banque'];
 
+            $mtdisp =  $dt['Montant_disponible_banque'];
+
             $mtdj = $dt['Montant_deja_reglé_banque'] + $payment;
+
+            #montant disponible 
+
+            #on determine le montant generé en CFA 
+            $mtgen_CFA = $dt["Montant_gen_cfa_banque"];
+
+            $montdj = $dt['Montant_deja_reglé_banque'];
+
+            $montDisp = $mtgen_CFA - ($montdj + $payment);
+
+            // Pour les montants en GNF 
+            $mtgen_GNF = $dt["Montant_gen_gnf_banque"];
+
+            $montdj_GNF = $dt['Montant_deja_reglé_banque_GNF'];
+
+            $montDisp_GNF = $mtgen_GNF - ($montdj_GNF + $payment2);
 
             // var_dump($mtdj);
 
+            // $mtemp = 
 
 
-            $nval = ($sm - $payment);
+
+            // $nval = ($sm - $payment);
 
             // var_dump($sm);
 
@@ -240,17 +274,23 @@ if (isset($_GET['fct']) && ($_GET['fct'] == "1")) {
 
             $data = [
 
-                'nvmt' => $nval,
+                'nvmt' => $montDisp,
+                
+                'nvmt_gnf' => $montDisp_GNF,
 
                 'mtr' => $mtdj,
 
-                'id' => $dt['reference_banque']
+                'mtr_gnf' => $montdj_GNF,
+
+                'id' => $dt['reference_banque'],
 
             ];
 
+
             //mise a jour banque 
 
-            $updt = 'UPDATE banque SET Montant_disponible_banque= :nvmt,Montant_deja_reglé_banque= :mtr where reference_banque=:id ';
+            $updt = 'UPDATE banque SET Montant_disponible_banque= :nvmt,Montant_disponible_banque_GNF= :nvmt_gnf,Montant_deja_reglé_banque= :mtr,Montant_deja_reglé_banque_GNF = :mtr_gnf
+            WHERE reference_banque=:id ';
 
             $stmt = $bdd->prepare($updt);
 
@@ -265,12 +305,13 @@ if (isset($_GET['fct']) && ($_GET['fct'] == "1")) {
                 'id_art' => $dt['reference_banque'],
 
                 'mtn_pay' => $payment,
+                'mtn_pay_gnf' => $payment2,
 
                 'dt_pay' => date('Y-m-d H:i:s')
 
             ];
 
-            $rqpay = 'INSERT INTO paiement (id_artiste_paiment,montant_paiement,date_paiment) VALUES (:id_art,:mtn_pay,:dt_pay)';
+            $rqpay = 'INSERT INTO paiement (id_artiste_paiment,montant_paiement,montant_paiment_gnf,date_paiment) VALUES (:id_art,:mtn_pay,:mtn_pay_gnf,:dt_pay)';
 
             $stmt3 = $bdd->prepare($rqpay);
 

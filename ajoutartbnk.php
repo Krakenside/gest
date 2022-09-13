@@ -169,8 +169,12 @@ if ($connect == "1" and $_SESSION["userCompte"] == 'ADMINAFP20') // Si le visite
                 <thead>
                   <tr>
                     <th>Artiste</th>
-                    <th>Montant disponible en banque CFA </th>
-                    <th>Montant déja réglé</th>
+                    <th>Montant generé en CFA </th>
+                    <th>Montant generé en GNF </th>
+                    <th>Nombre de ventes de sons </th>
+                    <th>Nombre de ventes d'albums </th>
+                    <th>Montant déja réglé CFA </th>
+                    <th>Montant déja réglé GNF </th>
                     <th>Action </th>
 
                 </thead>
@@ -200,7 +204,9 @@ if ($connect == "1" and $_SESSION["userCompte"] == 'ADMINAFP20') // Si le visite
               // var_dump($res2);
               $nmart = $res2["Nom_artiste_banque"];
               $mtndispo =  $res2["Montant_gen_cfa_banque"];
+              $mtndispo_gnf = $res2["Montant_gen_gnf_banque"];
               $mtdej = $res2["Montant_deja_reglé_banque"];
+              $mtdej_gnf = $res2["Montant_deja_reglé_banque_GNF"];
               $idart = $res2['reference_banque'];
 
               $rsbnqst->closeCursor();
@@ -211,6 +217,7 @@ if ($connect == "1" and $_SESSION["userCompte"] == 'ADMINAFP20') // Si le visite
                   <table>
                     <!-- <input type="hidden" name="fct" value="2"> -->
                     <input type="hidden" name="limite" value="<?php echo $mtndispo ?>">
+                    <input type="hidden" name="limite_gn" value="<?php echo $mtndispo_gnf ?>">
                     <input type="hidden" name="fct" value="3">
                     <input type="hidden" name="error" value="false">
                     <!-- <input type="text" name="py" id="">  -->
@@ -220,18 +227,32 @@ if ($connect == "1" and $_SESSION["userCompte"] == 'ADMINAFP20') // Si le visite
                       <td><input type="text" name="Nmart" readonly value="<?php echo $nmart   ?>" style="text-align:center ;"></td>
                     </tr>
                     <tr>
-                      <td> <label for="">Montant Disponible en banque </label> </td>
+                      <td> <label for="">Montant generé en CFA </label> </td>
                       <td><input type="text" name="disp" id="" readonly value="<?php echo $mtndispo; ?>" style="text-align:center"></td>
 
                     </tr>
                     <tr>
-                      <td>Montant Déja reglé</td>
+                      <td> <label for="">Montant generé en GNF </label> </td>
+                      <td><input type="text" name="disp2" id="" readonly value="<?php echo $mtndispo_gnf; ?>" style="text-align:center"></td>
+
+                    </tr>
+                    <tr>
+                      <td>Montant Déja reglé CFA </td>
                       <td><input type="text" name="dj" id="" value="<?php (is_null($mtdej)) ? ($mtdej = 0) : ($mtdej);
                                                                     echo $mtdej; ?>" style="text-align: center;" readonly></td>
                     </tr>
                     <tr>
-                      <td>Montant a payer</td>
-                      <td><input type="text" name="apy" id=""></td>
+                      <td>Montant Déja reglé GNF </td>
+                      <td><input type="text" name="dj" id="" value="<?php (is_null($mtdej_gnf)) ? ($mtdej_gnf = 0) : ($mtdej_gnf);
+                                                                    echo $mtdej_gnf; ?>" style="text-align: center;" readonly></td>
+                    </tr>
+                    <tr>
+                      <td>Montant a payer en CFA</td>
+                      <td><input type="text" name="apy" id="" value="0"></td>
+                    </tr>
+                    <tr>
+                      <td>Montant a payer en GNF </td>
+                      <td><input type="text" name="apy_gnf" id="" value="0"></td>
                     </tr>
                     <tr>
                       <td></td>

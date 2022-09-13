@@ -34,10 +34,7 @@ $mtsngn = array();
 
 
 
-$reA = "SELECT * FROM artiste ";
-
-
-
+$reA = "SELECT * FROM artiste where artiste.id_artiste =6 ";
 
 
 $artart = $bdd->query($reA);
@@ -68,6 +65,36 @@ foreach ($res1 as $key => $value) {
     #pour chaque artiste determinons les sons 
     var_dump($value["nom_artiste"]);
     echo '<br>';
+    #determiner la somme des dons pour cet artiste 
+    $reqDons_gen = 'SELECT SUM(don.somme_don)  FROM don
+    INNER JOIN transaction ON transaction.id_transaction = don.id_transaction 
+    INNER JOIN pays ON pays.id_pays = transaction.id_pays
+     WHERE don.id_artiste = :id_art
+     AND transaction.statut_transaction = "SUCCESS" 
+     AND pays.id_pays != 4 ';
+    $st44 = $bdd->prepare($reqDons_gen);
+    $st44->execute(
+
+        array('id_art' => $value["id_artiste"])
+    );
+    $resDons11 = $st44->fetch();
+    var_dump($resDons11["SUM(don.somme_don)"]);
+    $mtn_gen1 += $resDons11["SUM(don.somme_don)"];
+
+    $reqDons_gen_gn = 'SELECT SUM(don.somme_don)  FROM don
+    INNER JOIN transaction ON transaction.id_transaction = don.id_transaction 
+    INNER JOIN pays ON pays.id_pays = transaction.id_pays
+     WHERE don.id_artiste = :id_art
+     AND transaction.statut_transaction = "SUCCESS" 
+     AND pays.id_pays = 4 ';
+    $st45 = $bdd->prepare($reqDons_gen_gn);
+    $st45->execute(
+
+        array('id_art' => $value["id_artiste"])
+    );
+    $resDons12 = $st45->fetch();
+    var_dump($resDons12["SUM(don.somme_don)"]);
+    $mtn_gen2 += $resDons12["SUM(don.somme_don)"];
 
     $reqsong = "SELECT * FROM son WHERE son.id_artiste = :id_artiste";
     $st1 = $bdd->prepare($reqsong);
@@ -82,7 +109,9 @@ foreach ($res1 as $key => $value) {
         $reqtrsons = 'SELECT *
         FROM transaction
         INNER JOIN pays ON pays.id_pays = transaction.id_pays
-        WHERE transaction.statut_transaction = "SUCCESS" AND date_transaction BETWEEN "2021-01-01%" AND "2022-12-31%" AND (transaction.libelle_transaction LIKE "son-%" AND transaction.libelle_transaction LIKE "%-' . $elmt["id_son"] . '") ';
+        WHERE transaction.statut_transaction = "SUCCESS" 
+        AND date_transaction BETWEEN "2021-01-01%" AND "2022-12-31%" 
+        AND (transaction.libelle_transaction LIKE "son-%" AND transaction.libelle_transaction LIKE "%-' . $elmt["id_son"] . '") ';
         $st2 = $bdd->query($reqtrsons);
         $nbr_vt_sons_art += $st2->rowCount();
         foreach ($st2->fetchAll() as $elmt4) {
@@ -98,12 +127,16 @@ foreach ($res1 as $key => $value) {
             }
         }
         //determinons les dons pour ce son
-
+        //  
 
         $reqDons = 'SELECT *
         FROM transaction
         INNER JOIN pays ON pays.id_pays = transaction.id_pays
-        WHERE transaction.statut_transaction = "SUCCESS" AND date_transaction BETWEEN "2021-01-01%" AND "2022-12-31%" AND (transaction.libelle_transaction LIKE "son-' . $elmt["titre_son"] . '%") AND transaction.libelle_transaction LIKE "%-don" ';
+        WHERE transaction.statut_transaction = "SUCCESS" 
+        AND date_transaction BETWEEN "2021-01-01%" 
+        AND "2022-12-31%" 
+        AND (transaction.libelle_transaction LIKE "son-' . $elmt["titre_son"] . '%")
+         AND transaction.libelle_transaction LIKE "%-don" ';
         $st3 = $bdd->query($reqDons);
         // var_dump($reqDons);
         // echo 'Nombre de transactions pour le son : ' . $elmt["titre_son"] . ' ';
@@ -162,14 +195,15 @@ foreach ($res1 as $key => $value) {
         // var_dump($elmt["titre_son"]);
         // var_dump($elmt["id_son"]);
         // $tabinfo[$i][$value["id_artiste"]][1] = 
-
+        // var_dump($elmt2["titre_album"]);
         #determinons les transactions pour ce album
         $reqtrAlb = 'SELECT * FROM transaction 
         INNER JOIN pays on pays.id_pays = transaction.id_pays 
         WHERE transaction.statut_transaction = "SUCCESS"   
         AND date_transaction BETWEEN "2021-01-01%" AND "2022-12-31%"
-         AND  (transaction.libelle_transaction LIKE "album-%"  AND transaction.libelle_transaction LIKE "%-' . $elmt2["id_album"] . '") ';
+          AND ( transaction.libelle_transaction LIKE "album-%" AND transaction.libelle_transaction LIKE "%-' . $elmt2["id_album"] . '" )';
         $st6 = $bdd->query($reqtrAlb);
+        // var_dump($st6);
         // echo 'Nombre de transactions pour l"album : ' . $elmt2["id_album"] . ' ';
         // echo ($elmt2["prix_album"]);
         // var_dump($st6->rowCount());
@@ -191,11 +225,13 @@ foreach ($res1 as $key => $value) {
         // $mtn_gen2 += $mtn_art_Alb_GNF;
 
 
-        $reqtr_don_Alb = 'SELECT *
-        FROM transaction
-        INNER JOIN pays ON pays.id_pays = transaction.id_pays
-        WHERE transaction.statut_transaction = "SUCCESS" AND date_transaction BETWEEN "2021-01-01%" AND "2022-12-31%" AND (transaction.libelle_transaction LIKE "album-' . $elmt2["titre_album"] . '%") AND transaction.libelle_transaction LIKE "%-don"  ';
+        $reqtr_don_Alb = 'SELECT * FROM transaction 
+        INNER JOIN pays on pays.id_pays = transaction.id_pays 
+        WHERE transaction.statut_transaction = "SUCCESS"   
+        AND date_transaction BETWEEN "2021-01-01%" AND "2022-12-31%"
+          AND ( transaction.libelle_transaction  LIKE "album-%"  AND transaction.libelle_transaction LIKE "%-' . $elmt2["id_album"] . '-don" )';
         $st8 = $bdd->query($reqtr_don_Alb);
+        // var_dump($st8); 
         // var_dump($reqtr_don_Alb);
         // echo 'Nombre de transactions pour l"album : ' . $elmt2["id_album"] . ' ';
         // echo ($elmt2["prix_album"]);
@@ -265,7 +301,7 @@ foreach ($res1 as $key => $value) {
     // if ($i == 4) die;
 }
 
-
+// header('location:https://afreekaplay.com/gest/');SSS
 
 
 
