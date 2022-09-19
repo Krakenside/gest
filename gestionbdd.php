@@ -160,15 +160,15 @@ if ($connect == "1") // Si le visiteur s'est identifié.
 	 $_POST["is_active"] = 1;
 		 $_POST["password_client"] = md5($_POST["password_client"]);
 		 //$req = $bdd->query("SHOW TABLE STATUS FROM afreekaplay LIKE '".$tabl."' "); //==========================================================================
-		 $req = $bdd->query("SHOW TABLE STATUS FROM afrekply LIKE '".$tabl."' "); //==========================================================================
+		 $req = $bdd->query("SHOW TABLE STATUS FROM afrkplay LIKE '".$tabl."' "); //==========================================================================
 			$clt = $req->fetch();
 	 }
 
 	 if($tabl == 'maison' OR $tabl == "artiste" OR $tabl == "auteurS" OR $tabl == "apporteur"){
-		 $req = $bdd->query("SHOW TABLE STATUS FROM afrekply LIKE 'client' "); //==========================================================================
+		 $req = $bdd->query("SHOW TABLE STATUS FROM afrkplay LIKE 'client' "); //==========================================================================
 		 	 // $req = $bdd->query("SHOW TABLE STATUS FROM afreekaplay LIKE 'client' ");// ==========================================================================
 			$clt = $req->fetch();
-			$req1 = $bdd->query("SHOW TABLE STATUS FROM afrekply LIKE '".$tabl."' "); //==========================================================================
+			$req1 = $bdd->query("SHOW TABLE STATUS FROM afrkplay LIKE '".$tabl."' "); //==========================================================================
 			// $req1 = $bdd->query("SHOW TABLE STATUS FROM afreekaplay LIKE '".$tabl."' "); //==========================================================================
 			 $ta = $req1->fetch();
 			 if ($tabl == "artiste") {
@@ -188,7 +188,7 @@ if ($connect == "1") // Si le visiteur s'est identifié.
 		 $_POST["dte_enr_son"] = $dtime;
 		 $_POST["lien_son"] = str_replace(" ", "_", $_POST["titre_son"]);
 		 $_POST["id_album"] = ($_POST["id_album"] !== "") ? $_POST["id_album"] : NULL ;
-		 $req = $bdd->query("SHOW TABLE STATUS FROM afrekply LIKE '".$tabl."' "); //==========================================================================
+		 $req = $bdd->query("SHOW TABLE STATUS FROM afrkplay LIKE '".$tabl."' "); //==========================================================================
 		// $req = $bdd->query("SHOW TABLE STATUS FROM afreekaplay LIKE '".$tabl."' "); //==========================================================================
 		 	$sonpi = $req->fetch();
 	 }
@@ -200,7 +200,7 @@ if ($connect == "1") // Si le visiteur s'est identifié.
 		 $_POST["lien_album"] = str_replace(" ", "_", $_POST["titre_album"]);
 		 $_POST["is_active"] = 1;
 		 $_POST["visible_album"] = 1;
-		 $req = $bdd->query("SHOW TABLE STATUS FROM afrekply LIKE '".$tabl."' "); //==========================================================================
+		 $req = $bdd->query("SHOW TABLE STATUS FROM afrkplay LIKE '".$tabl."' "); //==========================================================================
 		// $req = $bdd->query("SHOW TABLE STATUS FROM afreekaplay LIKE '".$tabl."' "); //==========================================================================
 		 	$albpi = $req->fetch();
 	 }
@@ -395,7 +395,7 @@ if ($connect == "1") // Si le visiteur s'est identifié.
 		}
 		if (($tabl == "client") AND $_POST['email_client'] !== "") {
 
-			$req = $bdd->query("SHOW TABLE STATUS FROM afrekply LIKE '".$tabl."' "); //==========================================================================
+			$req = $bdd->query("SHOW TABLE STATUS FROM afrkplay LIKE '".$tabl."' "); //==========================================================================
 			//$req = $bdd->query("SHOW TABLE STATUS FROM afreekaplay LIKE '".$tabl."' "); //==========================================================================
 			 $ta = $req->fetch();
 

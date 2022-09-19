@@ -199,6 +199,7 @@ if (isset($_GET['fct']) && ($_GET['fct'] == "1")) {
             #si le montant generé et disponible n'est pas dpassé alors on continue
 
             $payment = (int) $_GET['apy'];
+
             $payment2 = (int) $_GET['apy_gnf'];
 
             // var_dump($payment);
@@ -252,7 +253,7 @@ if (isset($_GET['fct']) && ($_GET['fct'] == "1")) {
             // Pour les montants en GNF 
             $mtgen_GNF = $dt["Montant_gen_gnf_banque"];
 
-            $montdj_GNF = $dt['Montant_deja_reglé_banque_GNF'];
+            $montdj_GNF = $dt['Montant_deja_reglé_banque_GNF']+ $payment2;
 
             $montDisp_GNF = $mtgen_GNF - ($montdj_GNF + $payment2);
 
@@ -275,7 +276,7 @@ if (isset($_GET['fct']) && ($_GET['fct'] == "1")) {
             $data = [
 
                 'nvmt' => $montDisp,
-                
+
                 'nvmt_gnf' => $montDisp_GNF,
 
                 'mtr' => $mtdj,
