@@ -267,13 +267,17 @@ if ($connect == "1" and $_SESSION["userCompte"] == 'ADMINAFP20') // Si le visite
 
 
 
-                    <label style="margin-top:15px;">Titre de l'album</label>
-
                     <input class="form-control" name="titre_album" type="text" placeholder="" id="titre_album">
+                    <input class="form-control" name="titre_album2" type="text" placeholder="" id="titre_album2" hidden>
 
                     <label style="margin-top:15px;">Fichier de l'album</label>
 
-                    <input type="file" id='files' name="files[]" multiple><br>
+                    <!-- <input type="file" id='files' name="files[]" multiple><br> -->
+                    <!-- (A) UPLOAD BUTTON & FILE LIST -->
+                    <input type="button" id="pickfiles" value="Upload" />
+                    <div id="filelist"></div>
+
+
 
                     <label style="margin-top:15px;">Couverture de l'album</label>
 
@@ -361,7 +365,7 @@ if ($connect == "1" and $_SESSION["userCompte"] == 'ADMINAFP20') // Si le visite
                         <div class="input-group-addon">
 
                             <i class="fa fa-calendar"></i>
- 
+
                         </div>
 
                         <input name="date_verif" type="text" class="form-control" data-inputmask="'alias': 'yyyy-mm-dd'" data-mask="" id="dt_srt_alb">
@@ -420,6 +424,62 @@ if ($connect == "1" and $_SESSION["userCompte"] == 'ADMINAFP20') // Si le visite
 
         <div id='preview'></div>
 
+        <div id='preview'></div>
+
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/plupload/3.1.3/plupload.full.min.js"></script>
+        <script>
+            // (C) INITIALIZE UPLOADER
+            window.addEventListener("load", () => {
+                // (C1) GET HTML FILE LIST
+                var filelist = document.getElementById("filelist");
+                var frm = document.getElementById("titre_album2");
+
+                // (C2) INIT PLUPLOAD
+                var uploader = new plupload.Uploader({
+                    runtimes: "html5",
+                    browse_button: "pickfiles",
+                    url: "upload.php",
+                    chunk_size: "10mb",
+                    filters: {
+                        max_file_size: "150mb",
+                        mime_types: [{
+                            title: "Image files",
+                            extensions: "jpg,gif,zip"
+                        }]
+                    },
+                    init: {
+                        PostInit: () => {
+                            filelist.innerHTML = "<div>pret</div>";
+                        },
+                        FilesAdded: (up, files) => {
+                            plupload.each(files, (file) => {
+                                let row = document.createElement("div");
+                                row.id = file.id;
+                                row.innerHTML =
+                                    `${file.name} (${plupload.formatSize(file.size)}) <strong></strong>`;
+                                filelist.appendChild(row);
+                                // let row2 = document.createElement("input");
+                                // row2.id = "test";
+                                // row2.value =
+                                //     `${file.name} `;
+                                //     frm.appendChild(row2);
+                                frm.value = `${file.name} `;
+
+                            });
+                            uploader.start();
+                        },
+                        UploadProgress: (up, file) => {
+                            document.querySelector(`#${file.id} strong`).innerHTML = `${file.percent}%`;
+                        },
+                        Error: (up, err) => {
+                            console.error(err);
+                        }
+                    }
+                });
+                uploader.init();
+            });
+        </script>
 
 
         <!-- Script -->
