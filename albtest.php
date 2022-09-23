@@ -265,9 +265,9 @@ if ($connect == "1" and $_SESSION["userCompte"] == 'ADMINAFP20') // Si le visite
 
                 <form method='POST' action='ajaxfile.php' enctype="multipart/form-data">
 
+                    <label style="margin-top:15px;">Titre de l'album</label>
 
-
-                    <input class="form-control" name="titre_album" type="text" placeholder="" id="titre_album">
+                    <input class="form-control" name="titre_album" type="text" placeholder="" id="titre_album" required>
                     <input class="form-control" name="titre_album2" type="text" placeholder="" id="titre_album2" hidden>
 
                     <label style="margin-top:15px;">Fichier de l'album</label>
@@ -281,7 +281,7 @@ if ($connect == "1" and $_SESSION["userCompte"] == 'ADMINAFP20') // Si le visite
 
                     <label style="margin-top:15px;">Couverture de l'album</label>
 
-                    <input class="form-control" name="cover_album" type="file" id="cover_album">
+                    <input class="form-control" name="cover_album" type="file" id="cover_album" required>
 
                     <label style="margin-top:15px;">Prix de l'album</label>
 
@@ -332,7 +332,7 @@ if ($connect == "1" and $_SESSION["userCompte"] == 'ADMINAFP20') // Si le visite
 
                     <label style="margin-top:15px;">Genre</label>
 
-                    <select name="id_genre" class="form-control select2 lgenre select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true">
+                    <select name="id_genre" class="form-control select2 lgenre select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" required>
 
                         <?php foreach ($rqgen->fetchAll() as $elmt2) { ?>
 
@@ -356,7 +356,7 @@ if ($connect == "1" and $_SESSION["userCompte"] == 'ADMINAFP20') // Si le visite
 
                     <label style="margin-top:15px;">Statut sur le site</label>
 
-                    <input class="form-control" name="is_active" type="text" placeholder="" id="visible">
+                    <input class="form-control" name="is_active" type="text" placeholder="" id="visible" required>
 
                     <label style="margin-top:15px;">Date d’affichage sur le site:</label>
 
@@ -368,7 +368,7 @@ if ($connect == "1" and $_SESSION["userCompte"] == 'ADMINAFP20') // Si le visite
 
                         </div>
 
-                        <input name="date_verif" type="text" class="form-control" data-inputmask="'alias': 'yyyy-mm-dd'" data-mask="" id="dt_srt_alb">
+                        <input name="date_verif" type="text" class="form-control" data-inputmask="'alias': 'yyyy-mm-dd'" data-mask="" id="dt_srt_alb" required>
 
                     </div>
 

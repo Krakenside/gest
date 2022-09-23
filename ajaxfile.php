@@ -3,11 +3,11 @@
 session_start();
 
 set_time_limit(0);
-ini_set('memory_limit', '512M');
+// ini_set('memory_limit', '512M');
 
-ini_set('upload_max_filesize', '50M');
-ini_set('post_max_size', '50M');
-ini_set('max_input_time', 300);
+// ini_set('upload_max_filesize', '50M');
+// ini_set('post_max_size', '50M');
+// ini_set('max_input_time', 300);
 ini_set('max_execution_time', 300);
 
 
@@ -78,8 +78,8 @@ $chaine = genererChaineAleatoire();
 
 // var_dump($_FILES['cover_album']);
 
-// var_dump($_POST);
-// var_dump($_FILES);
+// // var_dump($_POST);
+// // var_dump($_FILES);
 
 // var_dump($ref_alb);
 
@@ -102,9 +102,10 @@ $countfiles = 1;
 
 // Upload directory
 
-$upload_location = "uploads/";
-$upload_location2 = "../../site/assets/images/cover/large/";
-$upload_location3 = "../site/file/";
+// $upload_location = "uploads/";
+$upload_location = "../site/assets/images/cover/large/";
+$filePath = __DIR__ . DIRECTORY_SEPARATOR . "../../file/";
+// $upload_location3 = "../site/file/";
 
 
 
@@ -144,7 +145,7 @@ $date_verif = date("Y-m-d H:i:s");
 
 $date_ver = $date_srt;
 
-$cover_alb = ' https://afreekaplay.com/site/assets/images/cover/large/' . $ref_alb . '.jpg';
+$cover_alb = 'https://afreekaplay.com/site/assets/images/cover/large/cover-' . $ref_alb . '.jpg';
 
 
 $prix_u = 0;
@@ -158,57 +159,57 @@ if ($prix_u < 200) {
 } else {
 	$prix_u = 500;
 }
-var_dump($ref_alb);
+// var_dump($ref_alb);
 
-echo '<br>';
-var_dump($_POST["titre_album2"]);
+// echo '<br>';
+// var_dump($_POST["titre_album2"]);
 
-echo '<br>';
-var_dump($titre_alb);
+// echo '<br>';
+// var_dump($titre_alb);
 
-echo '<br>';
+// echo '<br>';
 
-var_dump($cover_alb);
+// var_dump($cover_alb);
 
-echo '<br>';
+// echo '<br>';
 
-var_dump($date_srt);
+// var_dump($date_srt);
 
-echo '<br>';
-
-
-
-var_dump($id_genre);
-
-echo '<br>';
+// echo '<br>';
 
 
 
-var_dump($is_active);
+// var_dump($id_genre);
 
-echo '<br>';
-
-
-
-var_dump($prix_album);
-
-echo '<br>';
+// echo '<br>';
 
 
 
-var_dump($id_artiste);
+// var_dump($is_active);
 
-echo '<br>';
-
-
-
-var_dump($date_verif);
-
-echo '<br>';
+// echo '<br>';
 
 
 
-var_dump($date_ver);
+// var_dump($prix_album);
+
+// echo '<br>';
+
+
+
+// var_dump($id_artiste);
+
+// echo '<br>';
+
+
+
+// var_dump($date_verif);
+
+// echo '<br>';
+
+
+
+// var_dump($date_ver);
 
 // echo '<br>';
 
@@ -226,17 +227,18 @@ if (isset($_FILES['cover_album']['name']) && $_FILES['cover_album']['name'] != '
 
 	// File name
 
-	$filename = $_POST["titre_album2"];
+	$filename =  str_replace(" ", "_", $_POST["titre_album2"]);
 
 	$cover_filename = $_FILES['cover_album'];
+	
 
-	$fichier_album = basename(str_replace(" ", "_", $filename));
+	$fichier_album =$filename;
 
 	$url = "https://afreekaplay.com/album/" . $ref_alb . ".zip";
 
 	$lien_alb = basename(str_replace(" ", "_", $filename));
 
-	var_dump($filename);
+// 	var_dump($filename);
 
 	// var_dump($fichier_album);
 
@@ -245,7 +247,7 @@ if (isset($_FILES['cover_album']['name']) && $_FILES['cover_album']['name'] != '
 	// var_dump($lien_alb);
 
 	$cover_filename = basename($_FILES['cover_album']["name"]);
-	// var_dump($cover_filename);
+// 	var_dump($cover_filename);
 
 
 
@@ -309,7 +311,7 @@ if (isset($_FILES['cover_album']['name']) && $_FILES['cover_album']['name'] != '
 
 	// Valid file extension
 
-	$valid_ext = array("zip", "rar", "jpg");
+	$valid_ext = array("zip", "png", "jpg");
 
 
 
@@ -323,8 +325,8 @@ if (isset($_FILES['cover_album']['name']) && $_FILES['cover_album']['name'] != '
 
 		// $path = $upload_location . $filename;
 
-		$path2 = $upload_location . $ref_alb . ".jpg";
-		$path3 = $upload_location2 . $ref_alb . ".jpg";
+		$path2 = $upload_location ."cover-". $ref_alb . ".jpg";
+// 		$path3 = $upload_location2 . $ref_alb . ".jpg";
 		// $path3 = $upload_location3 . $ref_alb . ".jpg";
 
 
@@ -336,12 +338,12 @@ if (isset($_FILES['cover_album']['name']) && $_FILES['cover_album']['name'] != '
 
 
 
-			move_uploaded_file(
+// 			move_uploaded_file(
 
-				$_FILES['cover_album']["tmp_name"],
+// 				$_FILES['cover_album']["tmp_name"],
 
-				$path3
-			);
+// 				$path3
+// 			);
 			
 			// move_uploaded_file(
 
@@ -373,7 +375,7 @@ if (isset($_FILES['cover_album']['name']) && $_FILES['cover_album']['name'] != '
 
 
 
-	// insertion bd
+// 	insertion bd
 
 	$reqins = "INSERT INTO album(reference_album,titre_album,fichier_album,cover_album,prix_album,visible_album,
 
@@ -424,3 +426,5 @@ header('location:ajalb.php?nbr_sons=' . $nbr_sons_alb . '&nm=' . $titre_alb . '&
 // echo json_encode($titre_alb);
 
 die;
+// }
+?>

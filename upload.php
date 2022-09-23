@@ -53,7 +53,7 @@ if ($out) {
   $in = @fopen($_FILES["file"]["tmp_name"], "rb");
   if ($in) {
     while ($buff = fread($in, 4096)) {
-      fwrite($out, $buff);
+      fwrite($out, $buff);  
     }
   } else {
     verbose(0, "Failed to open input stream");
