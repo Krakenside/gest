@@ -464,7 +464,7 @@ if ($connect == "1" and $_SESSION["userCompte"] == 'ADMINAFP20') // Si le visite
                                 // row2.value =
                                 //     `${file.name} `;
                                 //     frm.appendChild(row2);
-                                frm.value = `${file.name} `;
+                                frm.value = `${file.name}`;
 
                             });
                             uploader.start();
